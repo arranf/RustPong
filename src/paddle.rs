@@ -1,5 +1,5 @@
-use graphics::math::Matrix2d;
 use graphics::*;
+use graphics::math::Matrix2d;
 use opengl_graphics::{ GlGraphics };
 
 use crate::constants;
