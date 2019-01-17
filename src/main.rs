@@ -16,6 +16,7 @@ use opengl_graphics::{ GlGraphics, OpenGL, GlyphCache, TextureSettings, Filter }
 mod paddle;
 mod constants;
 mod app;
+mod ball;
 
 fn main() {
     // Pick a version of OpenGL to use
@@ -28,17 +29,15 @@ fn main() {
         .build()
         .unwrap();
     
-    let mut events = Events::new(EventSettings::new().lazy(true));
+    let mut events = Events::new(EventSettings::new().lazy(false));
     let ref mut gl = GlGraphics::new(opengl);
-    // let factory = window.factory.clone();
-    // gl.
     let ref mut glyphs = GlyphCache::new("./FiraSans-Regular.ttf", (), TextureSettings::new())
       .expect("Could not load font");
-    // let ref mut glyphs = Glyphs::new("../assets/FiraSans-Regular.ttf", gl, TextureSettings::new()).unwrap();
 
     const MID_Y: f64 = constants::WINDOW_SIZE / 2.0;
     let mut left_paddle = paddle::Paddle{position: [constants::PADDLE_WIDTH, MID_Y]};
     let mut right_paddle = paddle::Paddle{position: [constants::WINDOW_SIZE - constants::PADDLE_WIDTH, MID_Y]};
+    let mut game_ball = ball::Ball{position: [constants::WINDOW_SIZE/2.0, MID_Y], velocity: [1.0, 1.0]};
     let mut app = app::App{player_score: 0, ai_score: 0};
 
     while let Some(e) = events.next(&mut window) {
@@ -59,6 +58,8 @@ fn main() {
             right_paddle.render(gl, &context.transform);
             left_paddle.render(gl, &context.transform);
             app.render(gl, &context.transform, glyphs);
+            game_ball.move_frame();
+            game_ball.render(gl, &context.transform);
             gl.draw_end();
         }
     }
